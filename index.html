@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Creamy | Sua Rotina Ideal</title>
+    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/11130/11130152.png">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     
@@ -210,14 +211,20 @@
             width: 100px;
             height: 100px;
             flex-shrink: 0;
-            background: #F8F9FA;
+            background: #fff;
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             margin-top: 5px;
+            overflow: hidden;
+            border: 1px solid #eee;
         }
-        .prod-img-box img { max-width: 80%; max-height: 80%; object-fit: contain; mix-blend-mode: multiply; }
+        .prod-img-box img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+        }
         
         .prod-content { flex: 1; }
         .step-tag { display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px; }
@@ -444,8 +451,8 @@
             </div>
 
             <div class="tabs-container">
-                <button class="tab-btn active" onclick="switchTab('morning')">🌞 Rotina Diurna</button>
-                <button class="tab-btn" onclick="switchTab('night')">🌙 Rotina Noturna</button>
+                <button class="tab-btn active" onclick="switchTab('morning', this)">🌞 Rotina Diurna</button>
+                <button class="tab-btn" onclick="switchTab('night', this)">🌙 Rotina Noturna</button>
             </div>
 
             <div id="content-morning" class="routine-grid" style="display: grid;"></div>
@@ -471,27 +478,103 @@
 
 <script>
     // --- 1. DADOS DE PRODUTOS ---
-    const IMG_PLACEHOLDER = "https://placehold.co/100x100/Fce4ec/e91e63?text=Creamy"; 
-
     const products = [
-        { id: "gl", name: "Gel de Limpeza", cat: "Limpeza", img: IMG_PLACEHOLDER, desc: "Limpeza eficiente para peles oleosas e mistas.", link: "https://www.creamy.com.br/gel-de-limpeza-facial/p" },
-        { id: "el", name: "Emulsão de Limpeza", cat: "Limpeza", img: IMG_PLACEHOLDER, desc: "Limpeza cremosa e hidratante.", link: "https://www.creamy.com.br/emulsao-de-limpeza/p" },
-        { id: "lg", name: "Limpador Glicerinado", cat: "Limpeza", img: IMG_PLACEHOLDER, desc: "Clássico suave neutro.", link: "https://www.creamy.com.br/limpador-facial-glicerinado/p" },
-        { id: "t_tranex", name: "Tônico Ác. Tranexâmico", cat: "Tônico", img: IMG_PLACEHOLDER, desc: "Solução clareadora e uniformizadora.", link: "https://www.creamy.com.br/solucao-acido-tranexamico/p" },
-        { id: "t_salic", name: "Tônico Ác. Salicílico", cat: "Tônico", img: IMG_PLACEHOLDER, desc: "Reduz poros e oleosidade imediata.", link: "https://www.creamy.com.br/solucao-acido-salicilico/p" },
-        { id: "vitc", name: "Vitamina C 10%", cat: "Antioxidante", img: IMG_PLACEHOLDER, desc: "Glow instantâneo e proteção urbana.", link: "https://www.creamy.com.br/vitamina-c/p" },
-        { id: "vitc_gold", name: "Vitamina C Gold", cat: "Antioxidante", img: IMG_PLACEHOLDER, desc: "Tecnologia avançada para peles maduras.", link: "https://www.creamy.com.br/serum-facial-vitamina-c-gold/p" },
-        { id: "niac", name: "Niacinamide 20%", cat: "Tratamento", img: IMG_PLACEHOLDER, desc: "Blend potente para poros e textura.", link: "https://www.creamy.com.br/niacinamide-b-complex-20/p" },
-        { id: "mandelico", name: "Ácido Mandélico", cat: "Renovador", img: IMG_PLACEHOLDER, desc: "O melhor amigo contra manchas e acne.", link: "https://www.creamy.com.br/acido-mandelico/p" },
-        { id: "glicolico", name: "Ácido Glicólico", cat: "Renovador Potente", img: IMG_PLACEHOLDER, desc: "Renovação celular intensa.", link: "https://www.creamy.com.br/acido-glicolico/p" },
-        { id: "lactic", name: "Ácido Lático", cat: "Renovador Hidratante", img: IMG_PLACEHOLDER, desc: "Esfoliação química para peles sensíveis.", link: "https://www.creamy.com.br/acido-latico/p" },
-        { id: "retinol", name: "Retinol 0.3", cat: "Anti-idade", img: IMG_PLACEHOLDER, desc: "O padrão ouro contra rugas finas.", link: "https://www.creamy.com.br/retinol/p" },
-        { id: "retinal", name: "Retinal", cat: "Anti-idade Potente", img: IMG_PLACEHOLDER, desc: "A evolução do retinol: mais rápido e antibacteriano.", link: "https://www.creamy.com.br/retinal/p" },
-        { id: "calming", name: "Calming Cream", cat: "Hidratante", img: IMG_PLACEHOLDER, desc: "Alívio imediato para vermelhidão.", link: "https://www.creamy.com.br/calming-cream/p" },
-        { id: "intensive", name: "Intensive Repair", cat: "Hidratante", img: IMG_PLACEHOLDER, desc: "Reparação profunda da barreira.", link: "https://www.creamy.com.br/intensive-repair-cream/p" },
-        { id: "serum_hid", name: "Sérum Hidratante", cat: "Hidratante", img: IMG_PLACEHOLDER, desc: "Hidratação invisível com Ácido Hialurônico.", link: "https://www.creamy.com.br/serum-hidratante/p" },
-        { id: "eye", name: "Eye Cream", cat: "Olhos", img: IMG_PLACEHOLDER, desc: "Tratamento 360º para o olhar.", link: "https://www.creamy.com.br/eye-cream/p" },
-        { id: "fps", name: "Protetor Solar Watery Fluid FPS 50", cat: "Proteção", img: IMG_PLACEHOLDER, desc: "Toque seco, invisível e alta proteção.", link: "https://www.creamy.com.br/protetor-solar-facial-watery-lotion-fps-60-uvas-ppd-25/p" }
+        // Limpeza
+        { 
+            id: "gl", name: "Gel de Limpeza", cat: "Limpeza", 
+            img: "https://creamy.vtexassets.com/arquivos/ids/157830-800-auto?v=638905143508700000&width=800&height=auto&aspect=true", 
+            desc: "Limpeza eficiente para peles oleosas e mistas.", link: "https://www.creamy.com.br/gel-de-limpeza/p" 
+        },
+        { 
+            id: "el", name: "Emulsão de Limpeza", cat: "Limpeza", 
+            img: "https://creamy.vtexassets.com/arquivos/ids/157995-800-auto?v=638902570356770000&width=800&height=auto&aspect=true", 
+            desc: "Limpeza cremosa e hidratante.", link: "https://www.creamy.com.br/emulsao-de-limpeza/p" 
+        },
+        { 
+            id: "lg", name: "Limpador Glicerinado", cat: "Limpeza", 
+            img: "https://creamy.vtexassets.com/arquivos/ids/157835-800-auto?v=638901986008330000&width=800&height=auto&aspect=true", 
+            desc: "Clássico suave neutro.", link: "https://www.creamy.com.br/limpador-facial-glicerinado/p" 
+        },
+        // Tônicos
+        { 
+            id: "t_tranex", name: "Tônico Ác. Tranexâmico", cat: "Tônico", 
+            img: "https://creamy.vtexassets.com/arquivos/ids/158013-800-auto?v=638902579799130000&width=800&height=auto&aspect=true", 
+            desc: "Solução clareadora e uniformizadora.", link: "https://www.creamy.com.br/acido-tranexamico-5478624/p" 
+        },
+        { 
+            id: "t_salic", name: "Tônico Ác. Salicílico", cat: "Tônico", 
+            img: "https://creamy.vtexassets.com/arquivos/ids/157775-800-auto?v=638901975006200000&width=800&height=auto&aspect=true", 
+            desc: "Reduz poros e oleosidade imediata.", link: "https://www.creamy.com.br/acido-salicilico/p" 
+        },
+        // Antioxidantes
+        { 
+            id: "vitc", name: "Vitamina C 10%", cat: "Antioxidante", 
+            img: "https://creamy.vtexassets.com/arquivos/ids/158047-800-auto?v=638902591541030000&width=800&height=auto&aspect=true", 
+            desc: "Glow instantâneo e proteção urbana.", link: "https://www.creamy.com.br/vitamina-c/p" 
+        },
+        { 
+            id: "vitc_gold", name: "Vitamina C Gold", cat: "Antioxidante", 
+            img: "https://creamy.vtexassets.com/arquivos/ids/157878-800-auto?v=638949372154800000&width=800&height=auto&aspect=true", 
+            desc: "Tecnologia avançada para peles maduras.", link: "https://www.creamy.com.br/vitamina-c-gold/p" 
+        },
+        { 
+            id: "niac", name: "Niacinamide 20%", cat: "Tratamento", 
+            img: "https://creamy.vtexassets.com/arquivos/ids/157793-800-auto?v=638901978865330000&width=800&height=auto&aspect=true", 
+            desc: "Blend potente para poros e textura.", link: "https://www.creamy.com.br/niacinamide-b-complex/p" 
+        },
+        // Ácidos
+        { 
+            id: "mandelico", name: "Ácido Mandélico", cat: "Renovador", 
+            img: "https://creamy.vtexassets.com/arquivos/ids/157961-800-auto?v=638902526406700000&width=800&height=auto&aspect=true", 
+            desc: "O melhor amigo contra manchas e acne.", link: "https://www.creamy.com.br/acido-mandelico/p" 
+        },
+        { 
+            id: "glicolico", name: "Ácido Glicólico", cat: "Renovador Potente", 
+            img: "https://creamy.vtexassets.com/arquivos/ids/158007-800-auto?v=638902579335770000&width=800&height=auto&aspect=true", 
+            desc: "Renovação celular intensa.", link: "https://www.creamy.com.br/acido-glicolico/p" 
+        },
+        { 
+            id: "lactic", name: "Ácido Lático", cat: "Renovador Hidratante", 
+            img: "https://creamy.vtexassets.com/arquivos/ids/157766-800-auto?v=638901971806870000&width=800&height=auto&aspect=true", 
+            desc: "Esfoliação química para peles sensíveis.", link: "https://www.creamy.com.br/acido-latico/p" 
+        },
+        { 
+            id: "retinol", name: "Retinol 0.3", cat: "Anti-idade", 
+            img: "https://creamy.vtexassets.com/arquivos/ids/158043-800-auto?v=638902590999200000&width=800&height=auto&aspect=true", 
+            desc: "O padrão ouro contra rugas finas.", link: "https://www.creamy.com.br/retinol/p" 
+        },
+        { 
+            id: "retinal", name: "Retinal", cat: "Anti-idade Potente", 
+            img: "https://creamy.vtexassets.com/arquivos/ids/158038-800-auto?v=638902590812670000&width=800&height=auto&aspect=true", 
+            desc: "A evolução do retinol: mais rápido e antibacteriano.", link: "https://www.creamy.com.br/serum-facial-anti-aging-retinal-30-g/p" 
+        },
+        // Hidratação
+        { 
+            id: "calming", name: "Calming Cream", cat: "Hidratante", 
+            img: "https://creamy.vtexassets.com/arquivos/ids/157983-800-auto?v=638902569437500000&width=800&height=auto&aspect=true", 
+            desc: "Alívio imediato para vermelhidão.", link: "https://www.creamy.com.br/creamy-calming-cream/p" 
+        },
+        { 
+            id: "intensive", name: "Intensive Repair", cat: "Hidratante", 
+            img: "https://creamy.vtexassets.com/arquivos/ids/157843-800-auto?v=638901987089200000&width=800&height=auto&aspect=true", 
+            desc: "Reparação profunda da barreira.", link: "https://www.creamy.com.br/intensive-repair-cream/p" 
+        },
+        { 
+            id: "serum_hid", name: "Sérum Hidratante", cat: "Hidratante", 
+            img: "https://creamy.vtexassets.com/arquivos/ids/158030-800-auto?v=638902590530770000&width=800&height=auto&aspect=true", 
+            desc: "Hidratação invisível com Ácido Hialurônico.", link: "https://www.creamy.com.br/drops-serum-hidratante/p" 
+        },
+        { 
+            id: "eye", name: "Eye Cream", cat: "Olhos", 
+            img: "https://creamy.vtexassets.com/arquivos/ids/157883-800-auto?v=638901992983700000&width=800&height=auto&aspect=true", 
+            desc: "Tratamento 360º para o olhar.", link: "https://www.creamy.com.br/eye-cream/p" 
+        },
+        // Proteção
+        { 
+            id: "fps", name: "Protetor Solar Watery Fluid FPS 50", cat: "Proteção", 
+            img: "https://creamy.vtexassets.com/arquivos/ids/158163-800-auto?v=638989989648000000&width=800&height=auto&aspect=true", 
+            desc: "Toque seco, invisível e alta proteção.", link: "https://www.creamy.com.br/protetor-solar-watery-fluid-fps-50/p" 
+        }
     ];
 
     const catClasses = {
@@ -624,6 +707,7 @@
             const colorClass = catClasses[item.p.cat] || 'cat-acido';
             const badgeClass = type;
             
+            // Aqui está o "animation: fadeUp" inicial. O switchTab precisa respeitar isso.
             const html = `
                 <div class="product-result-card ${colorClass}" style="animation: fadeUp 0.5s ease forwards; animation-delay: ${index * 0.1}s; opacity: 0;">
                     <div class="prod-img-box">
@@ -735,33 +819,46 @@
         type();
     }
 
-    function switchTab(tab) {
+    // --- FUNÇÃO CORRIGIDA PARA AS ABAS FUNCIONAREM ---
+    function switchTab(tab, btn) {
+        // 1. Atualiza classes dos botões (Visual)
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        event.target.classList.add('active');
         
+        // Verifica se o botão foi passado (para funcionar no clique)
+        if (btn) {
+            btn.classList.add('active');
+        }
+
+        // 2. Esconde ambas as listas
         document.getElementById('content-morning').style.display = 'none';
         document.getElementById('content-night').style.display = 'none';
         
+        // 3. Mostra a lista alvo
         const target = document.getElementById(`content-${tab}`);
         target.style.display = 'grid';
         
-        // Reiniciar animação
+        // 4. Reinicia a animação corretamente
         target.querySelectorAll('.product-result-card').forEach(c => {
+            // Guarda o delay original (para manter o efeito escadinha)
+            const currentDelay = c.style.animationDelay;
+
+            // Reseta a animação
             c.style.animation = 'none';
-            c.offsetHeight; /* trigger reflow */
-            c.style.animation = null; 
+            c.offsetHeight; /* Força o navegador a recalcular (Reflow) */
+            
+            // Reaplica a animação explicitamente
+            c.style.animation = 'fadeUp 0.5s ease forwards';
+            c.style.animationDelay = currentDelay; // Devolve o delay
         });
     }
 
     // Popup Logic
     function closePopup() { document.getElementById('popupOverlay').classList.remove('active'); }
     function copyCoupon() {
-        // Fallback seguro para clipboard
         const text = "CREAMY10";
         if (navigator.clipboard && window.isSecureContext) {
             navigator.clipboard.writeText(text);
         } else {
-            // Método antigo para garantir compatibilidade
             let textArea = document.createElement("textarea");
             textArea.value = text;
             textArea.style.position = "fixed";
