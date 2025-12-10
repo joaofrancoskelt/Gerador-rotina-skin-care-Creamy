@@ -5,134 +5,304 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Creamy | Sua Rotina Ideal</title>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
     <style>
+        /* --- 1. VARIÁVEIS & RESET --- */
         :root {
-            --primary: #E91E63; /* Rosa Creamy */
+            /* Cores da Marca e UI */
+            --primary: #E91E63;
             --primary-hover: #C2185B;
             --primary-light: #FCE4EC;
-            --text-dark: #2D3436;
-            --text-gray: #636E72;
+            --secondary: #2D3436;
+            --text-body: #4A5568;
             --bg-body: #F7F9FC;
             --white: #FFFFFF;
-            --radius: 16px;
-            --shadow: 0 10px 30px rgba(233, 30, 99, 0.08);
-            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --border: #E2E8F0;
+            --success: #48BB78;
 
-            /* Cores por Categoria */
-            --col-limpeza: #00BCD4;
-            --col-tonico: #673AB7;
-            --col-antiox: #FF9800;
-            --col-acido: #E91E63;
-            --col-hidra: #2196F3;
-            --col-fps: #FFC107;
+            /* Cores de Categoria */
+            --cat-limpeza: #00BCD4;
+            --cat-tonico: #673AB7;
+            --cat-antiox: #FF9800;
+            --cat-acido: #E91E63;
+            --cat-hidra: #2196F3;
+            --cat-fps: #FFC107;
+
+            /* Efeitos */
+            --radius: 16px;
+            --shadow-sm: 0 4px 6px rgba(0,0,0,0.02);
+            --shadow-md: 0 10px 30px rgba(0,0,0,0.08);
+            --shadow-hover: 0 20px 40px rgba(233, 30, 99, 0.15);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Inter', sans-serif; background-color: var(--bg-body); color: var(--text-dark); line-height: 1.5; padding-bottom: 40px; }
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--bg-body); 
+            color: var(--secondary); 
+            line-height: 1.6; 
+            padding-bottom: 80px;
+        }
 
-        /* --- HEADER --- */
-        header { background: var(--white); padding: 40px 20px; text-align: center; border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); margin-bottom: 30px; }
-        .brand { color: var(--primary); font-size: 2.5rem; font-weight: 800; letter-spacing: -1px; margin-bottom: 8px; display: inline-block; }
-        .subtitle { color: var(--text-gray); font-size: 1rem; max-width: 400px; margin: 0 auto; }
-        .container { max-width: 900px; margin: 0 auto; padding: 0 20px; }
+        /* --- 2. COMPONENTES GERAIS --- */
+        .container { max-width: 800px; margin: 0 auto; padding: 0 20px; }
+        
+        /* Barra de Progresso Fixa no Topo */
+        .progress-container {
+            position: sticky;
+            top: 0;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            padding: 15px 0;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+        .progress-bar {
+            height: 6px;
+            background: #EDF2F7;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), #FF4081);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        .progress-text { font-size: 0.8rem; font-weight: 600; color: var(--primary); text-transform: uppercase; letter-spacing: 1px; display: flex; justify-content: space-between; }
 
-        /* --- PERGUNTAS --- */
-        .question-section { background: var(--white); border-radius: var(--radius); padding: 25px; margin-bottom: 25px; box-shadow: var(--shadow); animation: slideUp 0.5s ease forwards; }
-        h2.section-title { font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-gray); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
-        h2.section-title i { color: var(--primary); font-size: 1.3rem; }
+        /* Header */
+        header { text-align: center; padding: 40px 0 20px; }
+        .brand { color: var(--primary); font-size: 3rem; font-weight: 800; letter-spacing: -2px; display: inline-block; margin-bottom: 5px; }
+        .subtitle { color: var(--text-body); font-size: 1.1rem; max-width: 500px; margin: 0 auto; }
+
+        /* --- 3. SEÇÕES DE PERGUNTA (CARDS) --- */
+        .question-section {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+            opacity: 0; 
+            transform: translateY(20px);
+            animation: fadeUp 0.6s ease forwards;
+        }
+        
+        .section-header { margin-bottom: 25px; display: flex; align-items: center; gap: 12px; }
+        .section-icon { width: 40px; height: 40px; background: var(--primary-light); color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+        .section-title { font-size: 1.25rem; font-weight: 700; color: var(--secondary); }
 
         /* Grid de Opções */
-        .options-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; }
+        .options-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; }
         .option-input { display: none; }
-        .option-card { border: 2px solid #EEE; border-radius: 12px; padding: 20px 15px; cursor: pointer; transition: var(--transition); display: flex; flex-direction: column; align-items: center; text-align: center; position: relative; background: var(--white); height: 100%; justify-content: center; }
-        .option-card:hover { transform: translateY(-3px); border-color: #FFC1E3; }
-        .option-icon { font-size: 2rem; color: var(--text-gray); margin-bottom: 10px; transition: var(--transition); }
-        .option-label { font-weight: 600; font-size: 0.95rem; color: var(--text-dark); }
         
-        .option-input:checked + .option-card { border-color: var(--primary); background-color: var(--primary-light); }
-        .option-input:checked + .option-card .option-icon { color: var(--primary); transform: scale(1.1); }
-        .option-input:checked + .option-card::after { content: '✓'; position: absolute; top: 10px; right: 10px; color: var(--primary); font-weight: bold; }
-
-        /* --- BOTÃO GERAR --- */
-        .btn-generate { display: block; width: 100%; max-width: 400px; margin: 40px auto; padding: 18px; background: linear-gradient(135deg, var(--primary), #FF4081); color: white; border: none; border-radius: 50px; font-size: 1.1rem; font-weight: 700; cursor: pointer; box-shadow: 0 10px 25px rgba(233, 30, 99, 0.4); transition: var(--transition); text-transform: uppercase; letter-spacing: 1px; }
-        .btn-generate:hover { transform: translateY(-2px); box-shadow: 0 15px 35px rgba(233, 30, 99, 0.5); }
-        .btn-generate:active { transform: scale(0.98); }
-        .btn-generate:disabled { background: #ccc; cursor: not-allowed; transform: none; box-shadow: none; }
-
-        /* --- ÁREA DE RESULTADO --- */
-        #result-area { display: none; margin-top: 50px; scroll-margin-top: 20px; }
-        .result-header { text-align: center; margin-bottom: 30px; }
-        .result-header h3 { font-size: 2rem; color: var(--primary); }
-
-        .routine-tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 30px; background: #EEE; padding: 5px; border-radius: 50px; display: inline-flex; position: relative; left: 50%; transform: translateX(-50%); }
-        .tab-btn { padding: 10px 30px; border-radius: 40px; border: none; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: var(--transition); background: transparent; color: var(--text-gray); }
-        .tab-btn.active { background: var(--white); color: var(--primary); box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-
-        .routine-content { display: none; }
-        .routine-content.active { display: block; animation: fadeIn 0.5s ease; }
-        /* Classe auxiliar para reiniciar animação */
-        .fade-anim { animation: fadeIn 0.6s ease forwards; }
-
-        /* --- CARD DE PRODUTO --- */
-        .product-card { background: var(--white); border-radius: 16px; padding: 20px; margin-bottom: 20px; display: flex; align-items: flex-start; gap: 20px; border-left: 6px solid var(--primary); box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: var(--transition); }
-        
-        /* Cores laterais dinâmicas */
-        .cat-limpeza { border-left-color: var(--col-limpeza); }
-        .cat-tonico { border-left-color: var(--col-tonico); }
-        .cat-antiox { border-left-color: var(--col-antiox); }
-        .cat-acido { border-left-color: var(--col-acido); }
-        .cat-hidratante { border-left-color: var(--col-hidra); }
-        .cat-protecao { border-left-color: var(--col-fps); }
-
-        .product-card:hover { transform: translateX(5px); }
-        .step-badge { background: var(--primary-light); color: var(--primary); padding: 5px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; display: inline-block; margin-bottom: 8px; }
-        .product-info { width: 100%; }
-        .product-info h4 { font-size: 1.2rem; margin-bottom: 5px; }
-        .product-desc { font-size: 0.9rem; color: var(--text-gray); margin-bottom: 15px; }
-        
-        /* Botão de Compra */
-        .buy-link { text-decoration: none; font-weight: 700; color: var(--primary); font-size: 0.9rem; display: inline-flex; align-items: center; gap: 5px; margin-top: 5px; border: 1px solid var(--primary); padding: 8px 15px; border-radius: 6px; transition: var(--transition); }
-        .buy-link:hover { background: var(--primary); color: white; }
-
-        /* --- CAIXA DE MODO DE USO (NOVO) --- */
-        .usage-box {
-            background-color: #F8F9FA;
-            border: 1px dashed #CCC;
-            border-radius: 8px;
-            padding: 12px;
-            margin: 15px 0;
-            font-size: 0.85rem;
-            color: #555;
+        .option-card {
+            background: var(--white);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 25px 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            height: 100%;
             display: flex;
-            gap: 10px;
-            align-items: flex-start;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
-        .usage-box i { color: var(--primary); font-size: 1.2rem; margin-top: 2px; }
 
-        .disclaimer { text-align: center; margin-top: 50px; padding: 20px; border-top: 1px solid #EEE; font-size: 0.8rem; color: #999; }
+        .option-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); border-color: #FECFE0; }
+        .option-icon { font-size: 2.5rem; color: #A0AEC0; margin-bottom: 15px; transition: var(--transition); }
+        .option-label { font-weight: 600; font-size: 1rem; color: var(--text-body); transition: var(--transition); }
 
-        /* --- POPUP DE CUPOM --- */
-        .coupon-popup { position: fixed; bottom: 20px; right: 20px; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.25); z-index: 9999; border: 2px solid var(--primary); max-width: 300px; transform: translateY(150%); opacity: 0; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); text-align: center; }
-        .coupon-popup.show { transform: translateY(0); opacity: 1; }
-        .coupon-title { font-weight: 800; color: var(--primary); font-size: 1.1rem; margin-bottom: 5px; }
-        .coupon-code { background: #EEE; padding: 10px; border-radius: 6px; font-family: monospace; font-size: 1.1rem; text-align: center; display: block; margin: 10px 0; letter-spacing: 1px; border: 1px dashed #999; }
-        .close-popup { position: absolute; top: 5px; right: 10px; cursor: pointer; color: #999; font-size: 1.2rem; }
+        /* Estados Ativos */
+        .option-input:checked + .option-card {
+            border-color: var(--primary);
+            background: linear-gradient(to bottom right, #FFF5F8, #FFFFFF);
+            box-shadow: 0 0 0 4px rgba(233, 30, 99, 0.1);
+        }
+        .option-input:checked + .option-card .option-icon { color: var(--primary); transform: scale(1.1); }
+        .option-input:checked + .option-card .option-label { color: var(--primary); }
+        .check-badge { position: absolute; top: 10px; right: 10px; color: var(--primary); opacity: 0; transform: scale(0); transition: var(--transition); }
+        .option-input:checked + .option-card .check-badge { opacity: 1; transform: scale(1); }
 
-        /* Animações */
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        /* --- 4. BOTÃO GERAR --- */
+        .action-area { text-align: center; margin: 50px 0; }
+        .btn-generate {
+            background: linear-gradient(135deg, var(--primary), #FF4081);
+            color: white;
+            padding: 20px 60px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            box-shadow: var(--shadow-hover);
+            transition: var(--transition);
+            letter-spacing: 0.5px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .btn-generate:hover:not(:disabled) { transform: translateY(-3px) scale(1.02); box-shadow: 0 25px 50px rgba(233, 30, 99, 0.3); }
+        .btn-generate:active:not(:disabled) { transform: scale(0.98); }
+        .btn-generate:disabled { background: #CBD5E0; cursor: not-allowed; box-shadow: none; transform: none; opacity: 0.7; }
+        
+        .loading-spinner { display: none; width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: white; animation: spin 1s linear infinite; }
 
-        /* Mobile */
+        /* --- 5. RESULTADOS --- */
+        #result-area { display: none; margin-top: 60px; scroll-margin-top: 40px; }
+        
+        .result-intro { text-align: center; margin-bottom: 40px; }
+        .result-title { font-size: 2.2rem; color: var(--secondary); margin-bottom: 10px; }
+        .typewriter-text { color: var(--primary); font-weight: 600; font-size: 1.1rem; min-height: 1.6em; }
+
+        /* Tabs */
+        .tabs-container { display: flex; justify-content: center; gap: 15px; margin-bottom: 40px; }
+        .tab-btn {
+            background: transparent;
+            border: 2px solid transparent;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-weight: 600;
+            color: #A0AEC0;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1rem;
+        }
+        .tab-btn.active { background: var(--white); color: var(--primary); box-shadow: var(--shadow-md); border-color: var(--primary-light); }
+        .tab-btn:hover:not(.active) { color: var(--primary); background: rgba(233, 30, 99, 0.05); }
+
+        /* Cards de Produto Resultante */
+        .routine-grid { display: grid; gap: 25px; }
+        .product-result-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 25px;
+            display: flex;
+            gap: 25px;
+            align-items: flex-start;
+            border: 1px solid var(--border);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        .product-result-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 6px; background: #CCC; }
+        
+        /* Cores Dinâmicas da Borda Lateral */
+        .cat-limpeza::before { background: var(--cat-limpeza); }
+        .cat-tonico::before { background: var(--cat-tonico); }
+        .cat-antiox::before { background: var(--cat-antiox); }
+        .cat-acido::before { background: var(--cat-acido); }
+        .cat-hidra::before { background: var(--cat-hidra); }
+        .cat-fps::before { background: var(--cat-fps); }
+
+        .product-result-card:hover { transform: translateX(10px); box-shadow: var(--shadow-md); }
+
+        .prod-img-box {
+            width: 100px;
+            height: 100px;
+            flex-shrink: 0;
+            background: #F8F9FA;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 5px;
+        }
+        .prod-img-box img { max-width: 80%; max-height: 80%; object-fit: contain; mix-blend-mode: multiply; }
+        
+        .prod-content { flex: 1; }
+        .step-tag { display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px; }
+        .step-tag.morning { background: #FFF9C4; color: #FBC02D; }
+        .step-tag.night { background: #E1BEE7; color: #8E24AA; }
+
+        .prod-name { font-size: 1.3rem; margin-bottom: 5px; color: var(--secondary); }
+        .prod-reason { color: var(--text-body); font-size: 0.95rem; margin-bottom: 15px; }
+        
+        .usage-instructions { 
+            background: #F7FAFC; 
+            padding: 15px; 
+            border-radius: 8px; 
+            border-left: 3px solid #CBD5E0; 
+            font-size: 0.9rem; 
+            color: #4A5568; 
+            margin-bottom: 15px; 
+            display: flex; 
+            gap: 12px; 
+            align-items: flex-start;
+            line-height: 1.5;
+        }
+        
+        .btn-buy { text-decoration: none; color: var(--white); background: var(--secondary); padding: 10px 20px; border-radius: 6px; font-size: 0.9rem; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; transition: var(--transition); }
+        .btn-buy:hover { background: var(--primary); }
+
+        /* --- 6. POPUP --- */
+        .popup-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 999;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; transition: var(--transition);
+            backdrop-filter: blur(5px);
+        }
+        .popup-overlay.active { opacity: 1; pointer-events: all; }
+        
+        .coupon-card {
+            background: var(--white); width: 90%; max-width: 350px;
+            padding: 30px; border-radius: 20px; text-align: center;
+            transform: translateY(50px); transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+        .popup-overlay.active .coupon-card { transform: translateY(0); }
+        .close-btn { position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #A0AEC0; }
+        
+        .coupon-box {
+            background: var(--primary-light); border: 2px dashed var(--primary);
+            color: var(--primary); padding: 15px; font-family: monospace;
+            font-size: 1.4rem; font-weight: 800; margin: 20px 0; cursor: pointer;
+            position: relative;
+        }
+        .coupon-box:active { transform: scale(0.98); }
+        .copy-feedback { font-size: 0.7rem; display: block; margin-top: 5px; opacity: 0; transition: 0.2s; }
+        .copy-feedback.show { opacity: 1; }
+
+        /* Animações Keyframes */
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* --- RESPONSIVIDADE --- */
         @media (max-width: 600px) {
-            .options-grid { grid-template-columns: 1fr 1fr; }
-            .product-card { flex-direction: column; gap: 10px; }
-            header { padding: 30px 15px; }
-            .brand { font-size: 2rem; }
-            .coupon-popup { right: 10px; left: 10px; max-width: none; bottom: 10px;}
+            .options-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+            .option-card { padding: 15px 10px; }
+            .option-icon { font-size: 2rem; margin-bottom: 10px; }
+            .product-result-card { flex-direction: column; text-align: center; align-items: center; }
+            .product-result-card::before { width: 100%; height: 6px; top: 0; bottom: auto; }
+            .usage-instructions { text-align: left; }
+            .prod-img-box { margin: 0 auto; }
+            .brand { font-size: 2.2rem; }
+            .section-title { font-size: 1.1rem; }
         }
     </style>
 </head>
 <body>
+
+    <div class="container progress-container">
+        <div class="progress-text">
+            <span>Questionário</span>
+            <span id="progress-steps">0/3 Respondido</span>
+        </div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill"></div>
+        </div>
+    </div>
 
     <header>
         <div class="brand">creamy</div>
@@ -141,411 +311,471 @@
 
     <div class="container">
         
-        <div class="question-section" style="animation-delay: 0.1s">
-            <h2 class="section-title"><i class="ph ph-face-mask"></i> Qual seu tipo de pele?</h2>
+        <div class="question-section" style="animation-delay: 0.1s" id="sec-1">
+            <div class="section-header">
+                <div class="section-icon"><i class="ph ph-face-mask"></i></div>
+                <h2 class="section-title">Qual seu tipo de pele?</h2>
+            </div>
             <div class="options-grid">
                 <label>
-                    <input type="radio" name="skinType" value="normal" class="option-input">
+                    <input type="radio" name="skinType" value="normal" class="option-input" onchange="updateProgress()">
                     <div class="option-card">
                         <i class="ph ph-smiley option-icon"></i>
-                        <span class="option-label">Equilibrada (Normal)</span>
+                        <span class="option-label">Equilibrada</span>
+                        <i class="ph ph-check-circle check-badge"></i>
                     </div>
                 </label>
                 <label>
-                    <input type="radio" name="skinType" value="oleosa" class="option-input">
+                    <input type="radio" name="skinType" value="oleosa" class="option-input" onchange="updateProgress()">
                     <div class="option-card">
                         <i class="ph ph-drop option-icon"></i>
                         <span class="option-label">Oleosa</span>
+                        <i class="ph ph-check-circle check-badge"></i>
                     </div>
                 </label>
                 <label>
-                    <input type="radio" name="skinType" value="seca" class="option-input">
+                    <input type="radio" name="skinType" value="seca" class="option-input" onchange="updateProgress()">
                     <div class="option-card">
                         <i class="ph ph-cactus option-icon"></i>
                         <span class="option-label">Seca</span>
+                        <i class="ph ph-check-circle check-badge"></i>
                     </div>
                 </label>
                 <label>
-                    <input type="radio" name="skinType" value="mista" class="option-input" checked>
+                    <input type="radio" name="skinType" value="mista" class="option-input" onchange="updateProgress()">
                     <div class="option-card">
                         <i class="ph ph-scales option-icon"></i>
                         <span class="option-label">Mista</span>
-                    </div>
-                </label>
-                <label>
-                    <input type="radio" name="skinType" value="sensivel" class="option-input">
-                    <div class="option-card">
-                        <i class="ph ph-feather option-icon"></i>
-                        <span class="option-label">Sensível</span>
+                        <i class="ph ph-check-circle check-badge"></i>
                     </div>
                 </label>
             </div>
         </div>
 
-        <div class="question-section" style="animation-delay: 0.2s">
-            <h2 class="section-title"><i class="ph ph-target"></i> Objetivo Principal (Pode marcar vários)</h2>
+        <div class="question-section" style="animation-delay: 0.2s" id="sec-2">
+            <div class="section-header">
+                <div class="section-icon"><i class="ph ph-target"></i></div>
+                <h2 class="section-title">Objetivos (Selecione todos que aplicar)</h2>
+            </div>
             <div class="options-grid">
                 <label>
-                    <input type="checkbox" name="goal" value="acne" class="option-input">
+                    <input type="checkbox" name="goal" value="acne" class="option-input" onchange="updateProgress()">
                     <div class="option-card">
-                        <i class="ph ph-virus option-icon"></i> <span class="option-label">Acne & Espinhas</span>
+                        <i class="ph ph-virus option-icon"></i>
+                        <span class="option-label">Acne & Espinhas</span>
+                        <i class="ph ph-check-circle check-badge"></i>
                     </div>
                 </label>
                 <label>
-                    <input type="checkbox" name="goal" value="manchas" class="option-input">
+                    <input type="checkbox" name="goal" value="manchas" class="option-input" onchange="updateProgress()">
                     <div class="option-card">
-                        <i class="ph ph-sun-dim option-icon"></i> <span class="option-label">Manchas</span>
+                        <i class="ph ph-sun-dim option-icon"></i>
+                        <span class="option-label">Manchas</span>
+                        <i class="ph ph-check-circle check-badge"></i>
                     </div>
                 </label>
                 <label>
-                    <input type="checkbox" name="goal" value="antienvelhecimento" class="option-input">
+                    <input type="checkbox" name="goal" value="antienvelhecimento" class="option-input" onchange="updateProgress()">
                     <div class="option-card">
-                        <i class="ph ph-hourglass option-icon"></i> <span class="option-label">Anti-idade</span>
+                        <i class="ph ph-hourglass option-icon"></i>
+                        <span class="option-label">Anti-idade</span>
+                        <i class="ph ph-check-circle check-badge"></i>
                     </div>
                 </label>
                 <label>
-                    <input type="checkbox" name="goal" value="textura" class="option-input">
+                    <input type="checkbox" name="goal" value="textura" class="option-input" onchange="updateProgress()">
                     <div class="option-card">
-                        <i class="ph ph-sparkle option-icon"></i> <span class="option-label">Poros & Textura</span>
-                    </div>
-                </label>
-                <label>
-                    <input type="checkbox" name="goal" value="rotina_basica" class="option-input">
-                    <div class="option-card">
-                        <i class="ph ph-shield-check option-icon"></i> <span class="option-label">Prevenção Básica</span>
+                        <i class="ph ph-sparkle option-icon"></i>
+                        <span class="option-label">Poros & Textura</span>
+                        <i class="ph ph-check-circle check-badge"></i>
                     </div>
                 </label>
             </div>
         </div>
 
-        <div class="question-section" style="animation-delay: 0.3s">
-            <h2 class="section-title"><i class="ph ph-flask"></i> Experiência com Ácidos</h2>
+        <div class="question-section" style="animation-delay: 0.3s" id="sec-3">
+            <div class="section-header">
+                <div class="section-icon"><i class="ph ph-flask"></i></div>
+                <h2 class="section-title">Experiência com Skincare</h2>
+            </div>
             <div class="options-grid">
                 <label>
-                    <input type="radio" name="level" value="iniciante" class="option-input" checked>
+                    <input type="radio" name="level" value="iniciante" class="option-input" onchange="updateProgress()">
                     <div class="option-card">
-                        <i class="ph ph-baby option-icon"></i> <span class="option-label">Iniciante</span>
+                        <i class="ph ph-baby option-icon"></i>
+                        <span class="option-label">Iniciante</span>
+                        <i class="ph ph-check-circle check-badge"></i>
                     </div>
                 </label>
                 <label>
-                    <input type="radio" name="level" value="intermediario" class="option-input">
+                    <input type="radio" name="level" value="intermediario" class="option-input" onchange="updateProgress()">
                     <div class="option-card">
-                        <i class="ph ph-student option-icon"></i> <span class="option-label">Já usei alguns</span>
+                        <i class="ph ph-student option-icon"></i>
+                        <span class="option-label">Já uso algo</span>
+                        <i class="ph ph-check-circle check-badge"></i>
                     </div>
                 </label>
                 <label>
-                    <input type="radio" name="level" value="avancado" class="option-input">
+                    <input type="radio" name="level" value="avancado" class="option-input" onchange="updateProgress()">
                     <div class="option-card">
-                        <i class="ph ph-graduation-cap option-icon"></i> <span class="option-label">Hardcore</span>
+                        <i class="ph ph-graduation-cap option-icon"></i>
+                        <span class="option-label">Expert (Hardcore)</span>
+                        <i class="ph ph-check-circle check-badge"></i>
                     </div>
                 </label>
             </div>
         </div>
 
-        <button id="btn-calc" class="btn-generate" onclick="generateRoutine()">
-            Gerar Minha Rotina <i class="ph ph-arrow-right" style="vertical-align: middle; margin-left: 8px;"></i>
-        </button>
+        <div class="action-area">
+            <button id="btn-calc" class="btn-generate" onclick="generateRoutine()" disabled>
+                <span class="btn-text">Gerar Minha Rotina</span>
+                <div class="loading-spinner"></div>
+                <i class="ph ph-arrow-right icon-arrow"></i>
+            </button>
+            <p style="margin-top: 10px; font-size: 0.85rem; color: #A0AEC0;">
+                <i class="ph ph-lock-key"></i> Dados seguros e processados no seu dispositivo.
+            </p>
+        </div>
 
         <div id="result-area">
-            <div class="result-header">
-                <h3>Sua Rotina Exclusiva</h3>
-                <p>Baseada nas suas respostas e no banco de dados Creamy.</p>
+            <div class="result-intro">
+                <h3 class="result-title">Sua Estratégia Creamy</h3>
+                <div id="typewriter" class="typewriter-text"></div>
             </div>
 
-            <div class="routine-tabs">
+            <div class="tabs-container">
                 <button class="tab-btn active" onclick="switchTab('morning')">🌞 Rotina Diurna</button>
                 <button class="tab-btn" onclick="switchTab('night')">🌙 Rotina Noturna</button>
             </div>
 
-            <div id="content-morning" class="routine-content active"></div>
-            <div id="content-night" class="routine-content"></div>
+            <div id="content-morning" class="routine-grid" style="display: grid;"></div>
+            <div id="content-night" class="routine-grid" style="display: none;"></div>
         </div>
 
-        <div class="disclaimer">
-            <p><strong>Aviso Legal:</strong> Esta ferramenta é uma simulação educativa. Não substitui consulta médica.</p>
-        </div>
     </div>
 
-    <div id="couponPopup" class="coupon-popup">
-        <span class="close-popup" onclick="closePopup()">&times;</span>
-        <div class="coupon-title">🎁 Presente para você!</div>
-        <p style="font-size: 0.9rem; color: #666;">Leve sua rotina completa com 10% OFF.</p>
-        <span class="coupon-code">------</span>
-        <button onclick="closePopup()" style="width:100%; background:var(--primary); color:white; border:none; padding:8px; border-radius:6px; cursor:pointer;">Copiar e Fechar</button>
+    <div id="popupOverlay" class="popup-overlay">
+        <div class="coupon-card">
+            <button class="close-btn" onclick="closePopup()">&times;</button>
+            <div style="font-size: 3rem; margin-bottom: 10px;">🎁</div>
+            <h3 style="color: var(--secondary); margin-bottom: 5px;">Gostou da rotina?</h3>
+            <p style="color: var(--text-body); font-size: 0.9rem; margin-bottom: 15px;">Leve o kit completo com <strong>10% OFF</strong> agora.</p>
+            
+            <div class="coupon-box" onclick="copyCoupon()">
+                CREAMY10
+                <span class="copy-feedback" id="copyMsg">Copiado!</span>
+            </div>
+            <button onclick="closePopup()" style="background: var(--secondary); color: white; border: none; padding: 10px 20px; border-radius: 8px; width: 100%; cursor: pointer;">Fechar</button>
+        </div>
     </div>
 
 <script>
-    // --- Lógica do Popup ---
-    setTimeout(() => { document.getElementById('couponPopup').classList.add('show'); }, 3000);
-    function closePopup() {
-        document.getElementById('couponPopup').classList.remove('show');
-        navigator.clipboard.writeText("descontoJOAO");
-    }
+    // --- 1. DADOS DE PRODUTOS ---
+    const IMG_PLACEHOLDER = "https://placehold.co/100x100/Fce4ec/e91e63?text=Creamy"; 
 
-    // Cores das Categorias
-    const catClasses = {
-        "Limpeza": "cat-limpeza",
-        "Tônico": "cat-tonico",
-        "Antioxidante": "cat-antiox",
-        "Tratamento": "cat-antiox",
-        "Renovador": "cat-acido",
-        "Renovador Potente": "cat-acido",
-        "Renovador Hidratante": "cat-acido",
-        "Anti-idade": "cat-acido",
-        "Anti-idade Potente": "cat-acido",
-        "Hidratante": "cat-hidratante",
-        "Proteção": "cat-protecao",
-        "Olhos": "cat-hidratante"
-    };
-
-    // BANCO DE DADOS (LINKS REAIS)
     const products = [
-        // LIMPEZA
-        { id: "gl", name: "Gel de Limpeza", cat: "Limpeza", desc: "Controla oleosidade sem repuxar.", link: "https://www.creamy.com.br/gel-de-limpeza-facial/p" },
-        { id: "el", name: "Emulsão de Limpeza", cat: "Limpeza", desc: "Limpeza cremosa hidratante.", link: "https://www.creamy.com.br/emulsao-de-limpeza/p" },
-        { id: "lg", name: "Limpador Glicerinado", cat: "Limpeza", desc: "Clássico suave neutro.", link: "https://www.creamy.com.br/limpador-facial-glicerinado/p" },
-
-        // TÔNICOS
-        { id: "t_tranex", name: "Tônico Ác. Tranexâmico", cat: "Tônico", desc: "Previne e clareia manchas.", link: "https://www.creamy.com.br/solucao-acido-tranexamico/p" },
-        { id: "t_salic", name: "Tônico Ác. Salicílico", cat: "Tônico", desc: "Reduz poros e oleosidade.", link: "https://www.creamy.com.br/solucao-acido-salicilico/p" },
-
-        // ANTIOXIDANTES
-        { id: "vitc", name: "Vitamina C 10%", cat: "Antioxidante", desc: "Ilumina e uniformiza.", link: "https://www.creamy.com.br/vitamina-c/p" },
-        { id: "vitc_gold", name: "Vitamina C Gold", cat: "Antioxidante", desc: "Tecnologia para peles maduras.", link: "https://www.creamy.com.br/serum-facial-vitamina-c-gold/p" },
-        { id: "niac", name: "Niacinamide 20%", cat: "Tratamento", desc: "Fortalece e fecha poros.", link: "https://www.creamy.com.br/niacinamide-b-complex-20/p" },
-
-        // ÁCIDOS / RENOVADORES
-        { id: "mandelico", name: "Ácido Mandélico", cat: "Renovador", desc: "Clareia manchas de acne suavemente.", link: "https://www.creamy.com.br/acido-mandelico/p" },
-        { id: "glicolico", name: "Ácido Glicólico", cat: "Renovador Potente", desc: "Textura e glow imediato.", link: "https://www.creamy.com.br/acido-glicolico/p" },
-        { id: "lactic", name: "Ácido Lático", cat: "Renovador Hidratante", desc: "Esfolia enquanto hidrata.", link: "https://www.creamy.com.br/acido-latico/p" },
-        { id: "retinol", name: "Retinol 0.3", cat: "Anti-idade", desc: "Contra rugas finas.", link: "https://www.creamy.com.br/retinol/p" },
-        { id: "retinal", name: "Retinal", cat: "Anti-idade Potente", desc: "Evolução do retinol antibacteriano.", link: "https://www.creamy.com.br/retinal/p" },
-
-        // HIDRATAÇÃO E OLHOS
-        { id: "calming", name: "Calming Cream", cat: "Hidratante", desc: "Alívio imediato.", link: "https://www.creamy.com.br/calming-cream/p" },
-        { id: "intensive", name: "Intensive Repair", cat: "Hidratante", desc: "Reparação profunda.", link: "https://www.creamy.com.br/intensive-repair-cream/p" },
-        { id: "serum_hid", name: "Sérum Hidratante", cat: "Hidratante", desc: "Ácido hialurônico leve.", link: "https://www.creamy.com.br/serum-hidratante/p" },
-        { id: "eye", name: "Eye Cream", cat: "Olhos", desc: "Trata olheiras e bolsas.", link: "https://www.creamy.com.br/eye-cream/p" },
-
-        // PROTEÇÃO
-        { id: "fps", name: "Protetor Solar FPS 60", cat: "Proteção", desc: "Toque seco e alta proteção.", link: "https://www.creamy.com.br/protetor-solar-facial-watery-lotion-fps-60-uvas-ppd-25/p" }
+        { id: "gl", name: "Gel de Limpeza", cat: "Limpeza", img: IMG_PLACEHOLDER, desc: "Limpeza eficiente para peles oleosas e mistas.", link: "https://www.creamy.com.br/gel-de-limpeza-facial/p" },
+        { id: "el", name: "Emulsão de Limpeza", cat: "Limpeza", img: IMG_PLACEHOLDER, desc: "Limpeza cremosa e hidratante.", link: "https://www.creamy.com.br/emulsao-de-limpeza/p" },
+        { id: "lg", name: "Limpador Glicerinado", cat: "Limpeza", img: IMG_PLACEHOLDER, desc: "Clássico suave neutro.", link: "https://www.creamy.com.br/limpador-facial-glicerinado/p" },
+        { id: "t_tranex", name: "Tônico Ác. Tranexâmico", cat: "Tônico", img: IMG_PLACEHOLDER, desc: "Solução clareadora e uniformizadora.", link: "https://www.creamy.com.br/solucao-acido-tranexamico/p" },
+        { id: "t_salic", name: "Tônico Ác. Salicílico", cat: "Tônico", img: IMG_PLACEHOLDER, desc: "Reduz poros e oleosidade imediata.", link: "https://www.creamy.com.br/solucao-acido-salicilico/p" },
+        { id: "vitc", name: "Vitamina C 10%", cat: "Antioxidante", img: IMG_PLACEHOLDER, desc: "Glow instantâneo e proteção urbana.", link: "https://www.creamy.com.br/vitamina-c/p" },
+        { id: "vitc_gold", name: "Vitamina C Gold", cat: "Antioxidante", img: IMG_PLACEHOLDER, desc: "Tecnologia avançada para peles maduras.", link: "https://www.creamy.com.br/serum-facial-vitamina-c-gold/p" },
+        { id: "niac", name: "Niacinamide 20%", cat: "Tratamento", img: IMG_PLACEHOLDER, desc: "Blend potente para poros e textura.", link: "https://www.creamy.com.br/niacinamide-b-complex-20/p" },
+        { id: "mandelico", name: "Ácido Mandélico", cat: "Renovador", img: IMG_PLACEHOLDER, desc: "O melhor amigo contra manchas e acne.", link: "https://www.creamy.com.br/acido-mandelico/p" },
+        { id: "glicolico", name: "Ácido Glicólico", cat: "Renovador Potente", img: IMG_PLACEHOLDER, desc: "Renovação celular intensa.", link: "https://www.creamy.com.br/acido-glicolico/p" },
+        { id: "lactic", name: "Ácido Lático", cat: "Renovador Hidratante", img: IMG_PLACEHOLDER, desc: "Esfoliação química para peles sensíveis.", link: "https://www.creamy.com.br/acido-latico/p" },
+        { id: "retinol", name: "Retinol 0.3", cat: "Anti-idade", img: IMG_PLACEHOLDER, desc: "O padrão ouro contra rugas finas.", link: "https://www.creamy.com.br/retinol/p" },
+        { id: "retinal", name: "Retinal", cat: "Anti-idade Potente", img: IMG_PLACEHOLDER, desc: "A evolução do retinol: mais rápido e antibacteriano.", link: "https://www.creamy.com.br/retinal/p" },
+        { id: "calming", name: "Calming Cream", cat: "Hidratante", img: IMG_PLACEHOLDER, desc: "Alívio imediato para vermelhidão.", link: "https://www.creamy.com.br/calming-cream/p" },
+        { id: "intensive", name: "Intensive Repair", cat: "Hidratante", img: IMG_PLACEHOLDER, desc: "Reparação profunda da barreira.", link: "https://www.creamy.com.br/intensive-repair-cream/p" },
+        { id: "serum_hid", name: "Sérum Hidratante", cat: "Hidratante", img: IMG_PLACEHOLDER, desc: "Hidratação invisível com Ácido Hialurônico.", link: "https://www.creamy.com.br/serum-hidratante/p" },
+        { id: "eye", name: "Eye Cream", cat: "Olhos", img: IMG_PLACEHOLDER, desc: "Tratamento 360º para o olhar.", link: "https://www.creamy.com.br/eye-cream/p" },
+        { id: "fps", name: "Protetor Solar Watery Fluid FPS 50", cat: "Proteção", img: IMG_PLACEHOLDER, desc: "Toque seco, invisível e alta proteção.", link: "https://www.creamy.com.br/protetor-solar-facial-watery-lotion-fps-60-uvas-ppd-25/p" }
     ];
 
-    function getVal(name) {
-        const checked = document.querySelector(`input[name="${name}"]:checked`);
-        return checked ? checked.value : null;
+    const catClasses = {
+        "Limpeza": "cat-limpeza", "Tônico": "cat-tonico", "Antioxidante": "cat-antiox",
+        "Tratamento": "cat-antiox", "Renovador": "cat-acido", "Renovador Potente": "cat-acido",
+        "Renovador Hidratante": "cat-acido", "Anti-idade": "cat-acido", "Anti-idade Potente": "cat-acido",
+        "Hidratante": "cat-hidra", "Proteção": "cat-fps", "Olhos": "cat-hidra"
+    };
+
+    // --- 2. LÓGICA DE UI (Progresso & Validação) ---
+    function updateProgress() {
+        const s1 = document.querySelector('input[name="skinType"]:checked');
+        const s2 = document.querySelector('input[name="goal"]:checked');
+        const s3 = document.querySelector('input[name="level"]:checked');
+
+        let count = 0;
+        if(s1) count++;
+        if(s2) count++;
+        if(s3) count++;
+
+        // Atualizar Barra
+        const percentage = (count / 3) * 100;
+        document.getElementById('progress-fill').style.width = percentage + '%';
+        document.getElementById('progress-steps').innerText = `${count}/3 Respondido`;
+
+        // Habilitar Botão
+        const btn = document.getElementById('btn-calc');
+        btn.disabled = (count < 3);
     }
 
-    function getCheckboxVal(name) {
-        return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`)).map(cb => cb.value);
-    }
-
-    // --- FUNÇÃO: Gera texto de uso baseado no nível e categoria ---
-    function getUsageText(prod, level) {
-        const cat = prod.cat;
-        
-        // Básicos (Uso igual para todos)
-        if (cat === 'Limpeza') return "Uso diário (manhã e noite). Massageie sobre a pele úmida.";
-        if (cat === 'Proteção') return "Uso diário obrigatório. Reaplique se suar muito.";
-        if (cat === 'Hidratante') return "Uso diário. Aplique no rosto todo.";
-        if (cat === 'Olhos') return "Use uma pequena quantidade na região dos olhos.";
-        
-        // Ativos Diurnos
-        if (cat === 'Antioxidante' || cat === 'Tratamento') {
-            return "Uso diário pela manhã, antes do protetor solar.";
-        }
-
-        // Ácidos / Renovadores / Tônicos (Dependem do Nível)
-        if (cat.includes('Renovador') || cat.includes('Anti-idade') || cat === 'Tônico') {
-            if (level === 'iniciante') {
-                return "<strong>Fase de adaptação:</strong> Comece usando em noites alternadas (dia sim, dia não). Aplique uma pequena quantidade.";
-            } else if (level === 'intermediario') {
-                return "Use de 5 a 6 vezes na semana. Intercale com uma noite apenas de hidratação.";
-            } else { // Avançado
-                return "Pode ser usado todas as noites. Suspenda o uso se sentir sensibilidade.";
-            }
-        }
-        
-        return "Siga as instruções do rótulo.";
-    }
-
+    // --- 3. LÓGICA DE GERAÇÃO (Core) ---
     function generateRoutine() {
         const btn = document.getElementById('btn-calc');
-        const resultArea = document.getElementById('result-area');
+        const spinner = btn.querySelector('.loading-spinner');
+        const icon = btn.querySelector('.icon-arrow');
+        const text = btn.querySelector('.btn-text');
         
-        const skinType = getVal('skinType');
-        const goals = getCheckboxVal('goal');
-        const level = getVal('level');
-
-        if(!skinType || goals.length === 0) {
-            alert("Por favor, selecione seu tipo de pele e pelo menos um objetivo!");
-            return;
-        }
-
-        // Feedback Visual
-        btn.innerHTML = '<i class="ph ph-spinner ph-spin"></i> Calculando...';
+        // Estado de Loading
         btn.disabled = true;
-        resultArea.style.opacity = '0.5';
+        spinner.style.display = 'inline-block';
+        icon.style.display = 'none';
+        text.innerText = 'Analisando Pele...';
 
+        // Simulação de delay para "pensar" (UX Premium)
         setTimeout(() => {
+            const skinType = getVal('skinType');
+            const goals = getCheckboxVal('goal');
+            const level = getVal('level');
+
             calculateLogic(skinType, goals, level);
             
-            // Restaura Botão e Mostra Resultado
-            btn.innerHTML = 'Gerar Minha Rotina <i class="ph ph-arrow-right" style="vertical-align: middle; margin-left: 8px;"></i>';
+            // UI Feedback Final
+            text.innerText = 'Gerar Novamente';
+            spinner.style.display = 'none';
+            icon.style.display = 'inline-block';
             btn.disabled = false;
-            resultArea.style.display = 'block';
-            resultArea.style.opacity = '1';
-            
-            // Reinicia animação
-            document.querySelectorAll('.routine-content').forEach(el => {
-                el.classList.remove('fade-anim');
-                void el.offsetWidth; // Trigger reflow
-                if(el.classList.contains('active')) el.classList.add('fade-anim');
-            });
 
+            // Mostrar e Scroll
+            const resultArea = document.getElementById('result-area');
+            resultArea.style.display = 'block';
             resultArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-        }, 400); // Pequeno delay para UX
+            // Efeito de digitação da frase
+            typeWriterEffect(skinType, goals);
+
+            // Trigger do Popup após 5 segundos da geração
+            setTimeout(() => {
+                document.getElementById('popupOverlay').classList.add('active');
+            }, 5000);
+
+        }, 1500);
     }
 
     function calculateLogic(skinType, goals, level) {
         let morning = [];
         let night = [];
 
-        // Helper para adicionar produto
-        const addProd = (list, step, id, reason) => {
-            const p = getProd(id);
-            if(p) {
-                list.push({ 
-                    step: step, 
-                    prod: p, 
-                    reason: reason, 
-                    usage: getUsageText(p, level) 
-                });
-            }
-        };
+        // Helper
+        const add = (list, id, stepName, reason) => {
+            const p = products.find(x => x.id === id);
+            if(p) list.push({ p, stepName, reason, usage: getUsageText(p, level) });
+        }
 
-        // --- Passo 1: Limpeza ---
-        let cleanserId = 'gl';
-        if (skinType === 'seca' || skinType === 'sensivel') cleanserId = 'el';
-        else if (skinType === 'normal') cleanserId = 'lg';
-        
-        addProd(morning, "Passo 1", cleanserId, "Limpeza suave ao acordar.");
-        addProd(night, "Passo 1", cleanserId, "Remover impurezas do dia.");
+        // 1. Limpeza
+        let cl = (skinType === 'seca' || skinType === 'sensivel') ? 'el' : (skinType === 'oleosa' ? 'gl' : 'lg');
+        add(morning, cl, 'Limpeza', 'Remover oleosidade noturna.');
+        add(night, cl, 'Limpeza', 'Remover poluição e impurezas.');
 
-        // --- Passo 2: Olhos ---
+        // 2. Olhos (Se necessário)
         if (goals.includes('antienvelhecimento') || goals.includes('manchas')) {
-            addProd(morning, "Passo 2", 'eye', "Cuidado área dos olhos.");
-            addProd(night, "Passo 2", 'eye', "Tratamento intensivo.");
+            add(morning, 'eye', 'Olhos', 'Hidratação da área sensível.');
+            add(night, 'eye', 'Olhos', 'Tratamento de linhas finas.');
         }
 
-        // --- Passo 3: Ativos Manhã ---
-        if (goals.includes('acne') && (skinType === 'oleosa' || skinType === 'mista')) {
-            addProd(morning, "Passo 3", 't_salic', "Controle de oleosidade.");
-        } else if (goals.includes('manchas')) {
-            addProd(morning, "Passo 3", 't_tranex', "Inibir manchas.");
-        }
+        // 3. Ativos Manhã
+        if (goals.includes('acne') && (skinType === 'oleosa' || skinType === 'mista')) add(morning, 't_salic', 'Tônico', 'Controle de poros.');
+        else if (goals.includes('manchas')) add(morning, 't_tranex', 'Tônico', 'Inibição de pigmento.');
 
-        let dayActiveId = 'vitc';
-        if ((skinType === 'oleosa' || goals.includes('textura')) && goals.includes('acne')) {
-            dayActiveId = 'niac';
-        } else if (goals.includes('antienvelhecimento') || skinType === 'seca') {
-            dayActiveId = 'vitc_gold'; 
-        }
-        
-        let stepNumDay = morning.length + 1;
-        addProd(morning, `Passo ${stepNumDay}`, dayActiveId, "Proteção antioxidante.");
+        let dayActive = (skinType === 'oleosa' && goals.includes('acne')) ? 'niac' : (goals.includes('antienvelhecimento') ? 'vitc_gold' : 'vitc');
+        add(morning, dayActive, 'Tratamento', 'Antioxidante e luminosidade.');
 
-        // --- Passo 4: Ativos Noite ---
-        let nightActiveId = 'mandelico';
+        // 4. Ativos Noite (Lógica Complexa Simplificada)
+        let nightActive = 'mandelico'; // Default seguro
+        if (skinType === 'sensivel') nightActive = 'lactic';
+        else if (goals.includes('acne') && goals.includes('antienvelhecimento')) nightActive = 'retinal';
+        else if (goals.includes('acne')) nightActive = (level === 'iniciante') ? 'mandelico' : 'retinal';
+        else if (goals.includes('antienvelhecimento')) nightActive = (level === 'avancado') ? 'retinal' : 'retinol';
+        else if (goals.includes('textura')) nightActive = 'glicolico';
 
-        if (skinType === 'sensivel') {
-            nightActiveId = 'lactic';
-        } else {
-            if (goals.includes('acne') && goals.includes('antienvelhecimento')) {
-                nightActiveId = 'retinal';
-            } else if (goals.includes('acne')) {
-                nightActiveId = (level === 'iniciante') ? 'mandelico' : 'retinal';
-            } else if (goals.includes('manchas') && goals.includes('textura')) {
-                nightActiveId = (level === 'avancado') ? 'glicolico' : 'mandelico';
-            } else if (goals.includes('manchas')) {
-                nightActiveId = 'mandelico';
-            } else if (goals.includes('antienvelhecimento')) {
-                nightActiveId = (level === 'avancado') ? 'retinal' : 'retinol';
-            } else if (goals.includes('textura')) {
-                nightActiveId = (level === 'avancado') ? 'glicolico' : 'mandelico';
-            }
-        }
-        
-        // Validação se produto existe (fallback)
-        if(!getProd(nightActiveId)) nightActiveId = 'mandelico';
+        add(night, nightActive, 'Ativo Principal', 'Tratamento profundo.');
 
-        let stepNumNight = night.length + 1;
-        addProd(night, `Passo ${stepNumNight}`, nightActiveId, "Tratamento principal.");
+        // 5. Hidratação
+        let hidra = (skinType === 'oleosa') ? 'serum_hid' : (skinType === 'seca' ? 'intensive' : 'calming');
+        if(skinType !== 'oleosa') add(morning, hidra, 'Hidratação', 'Proteger barreira.');
+        add(night, hidra, 'Hidratação', 'Recuperação noturna.');
 
-        // --- Passo 5: Hidratação ---
-        let moisturizerId = 'calming';
-        if (skinType === 'oleosa') moisturizerId = 'serum_hid';
-        else if (skinType === 'seca') moisturizerId = 'intensive';
-        
-        if(skinType !== 'oleosa') {
-            addProd(morning, "Hidratação", moisturizerId, "Selar a pele.");
-        }
-        addProd(night, "Finalizar", moisturizerId, "Recuperar barreira.");
+        // 6. Proteção
+        add(morning, 'fps', 'Proteção', 'Passo mais importante do dia.');
 
-        // --- Passo 6: Proteção (Dia) ---
-        addProd(morning, "Proteção", 'fps', "Indispensável.");
-
-        renderList('content-morning', morning);
-        renderList('content-night', night);
+        renderList('content-morning', morning, 'morning');
+        renderList('content-night', night, 'night');
     }
 
-    function getProd(id) {
-        return products.find(p => p.id === id);
-    }
-
-    function renderList(containerId, list) {
-        const container = document.getElementById(containerId);
+    // --- 4. RENDERIZAÇÃO ---
+    function renderList(divId, list, type) {
+        const container = document.getElementById(divId);
         container.innerHTML = '';
         
-        let htmlBuffer = '';
-        list.forEach(item => {
-            let colorClass = catClasses[item.prod.cat] || "cat-acido";
+        list.forEach((item, index) => {
+            const colorClass = catClasses[item.p.cat] || 'cat-acido';
+            const badgeClass = type;
             
-            htmlBuffer += `
-                <div class="product-card ${colorClass}">
-                    <div class="product-info">
-                        <span class="step-badge">${item.step} - ${item.prod.cat}</span>
-                        <h4>${item.prod.name}</h4>
-                        <p class="product-desc">${item.prod.desc} <br> <em>💡 ${item.reason}</em></p>
+            const html = `
+                <div class="product-result-card ${colorClass}" style="animation: fadeUp 0.5s ease forwards; animation-delay: ${index * 0.1}s; opacity: 0;">
+                    <div class="prod-img-box">
+                        <img src="${item.p.img}" alt="${item.p.name}">
+                    </div>
+                    <div class="prod-content">
+                        <span class="step-tag ${badgeClass}">Passo ${index + 1} • ${item.stepName}</span>
+                        <h4 class="prod-name">${item.p.name}</h4>
+                        <p class="prod-reason">${item.reason}</p>
                         
-                        <div class="usage-box">
-                            <i class="ph ph-info"></i>
-                            <div><strong>Modo de Uso:</strong> ${item.usage}</div>
+                        <div class="usage-instructions">
+                            <i class="ph ph-info" style="font-size: 1.5rem; color: var(--primary); flex-shrink: 0; margin-top: 3px;"></i>
+                            <div>
+                                <strong style="display:block; margin-bottom:5px;">Como usar:</strong>
+                                ${item.usage}
+                            </div>
                         </div>
 
-                        <a href="${item.prod.link}" target="_blank" class="buy-link">
-                            Comprar no Site Oficial <i class="ph ph-arrow-square-out"></i>
+                        <a href="${item.p.link}" target="_blank" class="btn-buy">
+                            Comprar <i class="ph ph-arrow-square-out"></i>
                         </a>
                     </div>
                 </div>
             `;
+            container.innerHTML += html;
         });
-        container.innerHTML = htmlBuffer;
+    }
+
+    // --- 5. HELPERS E LÓGICA DE FREQUÊNCIA MELHORADA ---
+    function getVal(n) { const el = document.querySelector(`input[name="${n}"]:checked`); return el ? el.value : null; }
+    function getCheckboxVal(n) { return Array.from(document.querySelectorAll(`input[name="${n}"]:checked`)).map(c => c.value); }
+
+    function getUsageText(prod, level) {
+        // 1. LIMPEZA
+        if(prod.cat === 'Limpeza') {
+            return "<strong>Manhã e Noite:</strong> Aplique sobre a pele úmida, massageie suavemente por 60 segundos e enxágue. Não use água quente.";
+        }
+
+        // 2. TÔNICOS
+        if(prod.cat === 'Tônico') {
+            if(prod.id === 't_salic' || prod.id === 't_tranex') {
+                if(level === 'iniciante') return "<strong>Noite:</strong> Inicie usando 3x na semana após a limpeza. Aplique com as mãos ou algodão. Aumente se a pele tolerar bem.";
+                return "<strong>Manhã ou Noite:</strong> Pode ser usado diariamente após limpar o rosto. Espere secar antes do próximo passo.";
+            }
+            return "Use diariamente após a limpeza para equilibrar o pH.";
+        }
+
+        // 3. ANTIOXIDANTES (Vit C, Niacinamida)
+        if(prod.cat === 'Antioxidante' || prod.cat === 'Tratamento') {
+            if(prod.id === 'vitc' || prod.id === 'vitc_gold') {
+                return "<strong>Pela manhã:</strong> Com o rosto limpo e seco, seja o primeiro produto a aplicar. 3 a 5 gotas são suficientes.";
+            }
+            if(prod.id === 'niac') {
+                return "<strong>Manhã e/ou Noite:</strong> Pode ser usado antes do hidratante. Ajuda a controlar a oleosidade durante o dia.";
+            }
+        }
+
+        // 4. ÁCIDOS E RENOVADORES (Escadinha de Tolerância)
+        if(prod.cat.includes('Renovador') || prod.cat.includes('Anti-idade')) {
+            const warning = "<br><em style='font-size:0.85em; color:#E91E63; display:block; margin-top:5px;'>*Evite aplicar nos cantos do nariz, boca e olhos.</em>";
+            
+            if(level === 'iniciante') {
+                return "<strong>Apenas à noite.</strong> Comece devagar: Use 2 noites na semana (ex: Terça e Sexta). Aumente conforme tolerância." + warning;
+            }
+            if(level === 'intermediario') {
+                return "<strong>Apenas à noite.</strong> Use em noites alternadas (Dia sim, dia não). Se sentir sensibilidade, dê um intervalo maior." + warning;
+            }
+            // Avançado
+            return "<strong>Uso Noturno Diário.</strong> Aplique uma fina camada. Suspenda o uso caso a pele fique sensibilizada." + warning;
+        }
+
+        // 5. HIDRATANTES
+        if(prod.cat === 'Hidratante') {
+            if(prod.id === 'calming') return "Use sempre que sentir a pele sensível ou vermelha. Ideal aplicar <strong>antes</strong> dos ácidos fortes para reduzir irritação.";
+            return "<strong>Manhã e Noite:</strong> Aplique em todo o rosto. De dia, uma camada fina. À noite, uma camada generosa para recuperar a pele.";
+        }
+
+        // 6. ÁREA DOS OLHOS
+        if(prod.cat === 'Olhos') {
+            return "Aplique uma quantidade pequena (grão de arroz) e espalhe com o dedo anelar dando leves batidinhas. Não esfregue.";
+        }
+
+        // 7. PROTEÇÃO SOLAR
+        if(prod.cat === 'Proteção') {
+            return "<strong>Uso Obrigatório:</strong> Aplique a regra dos 3 dedos para rosto e pescoço. Reaplique após o almoço ou se suar muito.";
+        }
+
+        return "Siga as instruções do rótulo.";
+    }
+
+    function typeWriterEffect(skinType, goals) {
+        const el = document.getElementById('typewriter');
+        el.innerHTML = '';
+        
+        // Frase dinâmica baseada no objetivo
+        let phrase = `Para sua pele ${skinType}, focamos em equilíbrio.`;
+        if(goals.includes('acne')) phrase = `Montamos um escudo contra a acne para sua pele ${skinType}.`;
+        if(goals.includes('antienvelhecimento')) phrase = `Uma rotina de alta performance para renovar sua pele ${skinType}.`;
+        
+        let i = 0;
+        const speed = 30;
+        function type() {
+            if (i < phrase.length) {
+                el.innerHTML += phrase.charAt(i);
+                i++;
+                setTimeout(type, speed);
+            }
+        }
+        type();
     }
 
     function switchTab(tab) {
-        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         event.target.classList.add('active');
-
-        document.querySelectorAll('.routine-content').forEach(content => {
-            content.classList.remove('active', 'fade-anim');
-        });
         
-        const activeContent = document.getElementById(`content-${tab}`);
-        activeContent.classList.add('active', 'fade-anim');
+        document.getElementById('content-morning').style.display = 'none';
+        document.getElementById('content-night').style.display = 'none';
+        
+        const target = document.getElementById(`content-${tab}`);
+        target.style.display = 'grid';
+        
+        // Reiniciar animação
+        target.querySelectorAll('.product-result-card').forEach(c => {
+            c.style.animation = 'none';
+            c.offsetHeight; /* trigger reflow */
+            c.style.animation = null; 
+        });
+    }
+
+    // Popup Logic
+    function closePopup() { document.getElementById('popupOverlay').classList.remove('active'); }
+    function copyCoupon() {
+        // Fallback seguro para clipboard
+        const text = "CREAMY10";
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(text);
+        } else {
+            // Método antigo para garantir compatibilidade
+            let textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+        }
+        
+        const msg = document.getElementById('copyMsg');
+        msg.classList.add('show');
+        setTimeout(() => msg.classList.remove('show'), 2000);
     }
 </script>
-
 </body>
 </html>
